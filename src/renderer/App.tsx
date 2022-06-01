@@ -1,50 +1,71 @@
-import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
-import icon from '../../assets/icon.svg';
+import {
+  ChakraProvider,
+  Flex,
+  Heading,
+  List,
+  ListItem,
+  Text,
+} from '@chakra-ui/react';
+import {
+  MemoryRouter as Router,
+  Routes,
+  Route,
+  NavLink,
+  Link,
+} from 'react-router-dom';
 import './App.css';
+import { useEffect, useState } from 'react';
 
 const Hello = () => {
   return (
-    <div>
-      <div className="Hello">
-        <img width="200px" alt="icon" src={icon} />
-      </div>
-      <h1>electron-react-boilerplate</h1>
-      <div className="Hello">
-        <a
-          href="https://electron-react-boilerplate.js.org/"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <button type="button">
-            <span role="img" aria-label="books">
-              📚
-            </span>
-            Read our docs
-          </button>
-        </a>
-        <a
-          href="https://github.com/sponsors/electron-react-boilerplate"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <button type="button">
-            <span role="img" aria-label="books">
-              🙏
-            </span>
-            Donate
-          </button>
-        </a>
-      </div>
-    </div>
+    <Flex flexDir="column">
+      <Heading>Super duper menu:</Heading>
+      <List>
+        <ListItem as={NavLink} to="/grpc">
+          GRPC
+        </ListItem>
+      </List>
+    </Flex>
   );
 };
 
+function Grpc() {
+  const [message, setMessage] = useState<string>();
+  const [counter, setCounter] = useState<number>(0);
+
+  useEffect(() => {
+    window.electron.ipcRenderer.on('grpc-hello', (arg) => {
+      setMessage(arg as string);
+    });
+    window.electron.ipcRenderer.on('grpc-counter', (arg) => {
+      setCounter(arg as number);
+    });
+    window.electron.ipcRenderer.sendMessage('grpc-hello', [{ name: 'Lucas' }]);
+    window.electron.ipcRenderer.sendMessage('grpc-counter', [
+      { countRange: 10 },
+    ]);
+  }, []);
+
+  return (
+    <Flex p={4} gap={4} flexDir="column">
+      <Link to="/">
+        <Heading>GRPC</Heading>
+      </Link>
+      <Text>Message: {message}</Text>
+      <Text>Counter: {counter}</Text>
+    </Flex>
+  );
+}
+
 export default function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Hello />} />
-      </Routes>
-    </Router>
+    <ChakraProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Hello />} />
+          <Route path="/grpc" element={<Grpc />} />
+        </Routes>
+      </Router>
+    </ChakraProvider>
   );
 }

@@ -43,10 +43,12 @@
     "prepare": "husky install",
     "rebuild": "electron-rebuild --parallel --types prod,dev,optional --module-dir release/app",
     "start": "ts-node ./.erb/scripts/check-port-in-use.js && npm run start:renderer",
+    "start:grpc": "cross-env NODE_ENV=development ts-node ./src/grpc/greeter-server.ts",
     "start:main": "cross-env NODE_ENV=development electronmon -r ts-node/register/transpile-only .",
     "start:preload": "cross-env NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.preload.dev.ts",
     "start:renderer": "cross-env NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true webpack serve --config ./.erb/configs/webpack.config.renderer.dev.ts",
-    "test": "jest"
+    "test": "jest",
+    "proto:gen": "protoc --proto_path=./src/grpc/proto --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_opt=outputServices=nice-grpc,outputServices=generic-definitions,useExactTypes=false,esModuleInterop=true --ts_proto_out=./src/grpc/gen_proto ./src/grpc/proto/*.proto"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
@@ -65,6 +67,7 @@
   "browserslist": [],
   "prettier": {
     "singleQuote": true,
+    "jsxSingleQuote": true,
     "overrides": [
       {
         "files": [
@@ -108,9 +111,17 @@
     }
   },
   "dependencies": {
+    "@chakra-ui/react": "^2.1.2",
+    "@emotion/react": "^11",
+    "@emotion/styled": "^11",
     "electron-debug": "^3.2.0",
     "electron-log": "^4.4.7",
     "electron-updater": "^5.0.1",
+    "framer-motion": "^6",
+    "ix": "^4.5.2",
+    "long": "^5.2.0",
+    "nice-grpc": "^1.2.0",
+    "protobufjs": "^6.11.3",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
     "react-router-dom": "^6.3.0"
@@ -173,7 +184,8 @@
     "terser-webpack-plugin": "^5.3.1",
     "ts-jest": "^28.0.2",
     "ts-loader": "^9.3.0",
-    "ts-node": "^10.7.0",
+    "ts-node": "^10.8.0",
+    "ts-proto": "^1.114.7",
     "typescript": "^4.6.4",
     "url-loader": "^4.1.1",
     "webpack": "^5.72.1",

@@ -1,4 +1,5 @@
 import {
+  Button,
   ChakraProvider,
   Flex,
   Heading,
@@ -11,17 +12,16 @@ import {
   Routes,
   Route,
   NavLink,
-  Link,
 } from 'react-router-dom';
 import './App.css';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 const Hello = () => {
   return (
-    <Flex flexDir="column">
+    <Flex flexDir='column'>
       <Heading>Super duper menu:</Heading>
       <List>
-        <ListItem as={NavLink} to="/grpc">
+        <ListItem as={NavLink} to='/grpc'>
           GRPC
         </ListItem>
       </List>
@@ -29,30 +29,43 @@ const Hello = () => {
   );
 };
 
+const { ipcRenderer } = window.electron;
+
 function Grpc() {
   const [message, setMessage] = useState<string>();
-  const [counter, setCounter] = useState<number>(0);
+  const [counter, setCounter] = useState<number>();
 
   useEffect(() => {
-    window.electron.ipcRenderer.on('grpc-hello', (arg) => {
-      setMessage(arg as string);
+    ipcRenderer.on('grpc-hello', (helloMessage) => {
+      setMessage(helloMessage as string);
     });
-    window.electron.ipcRenderer.on('grpc-counter', (arg) => {
-      setCounter(arg as number);
+    ipcRenderer.on('grpc-counter', (countVal) => {
+      setCounter(countVal as number);
     });
-    window.electron.ipcRenderer.sendMessage('grpc-hello', [{ name: 'Lucas' }]);
-    window.electron.ipcRenderer.sendMessage('grpc-counter', [
-      { countRange: 10 },
-    ]);
+
+    return () => {
+      ipcRenderer.removeAllListeners('grpc-hello');
+      ipcRenderer.removeAllListeners('grpc-counter');
+    };
+  });
+
+  const onGetDataClick = useCallback(() => {
+    ipcRenderer.sendMessage('grpc-hello', [{ name: 'Lucas' }]);
+    ipcRenderer.sendMessage('grpc-counter', [{ countRange: 10 }]);
+  }, []);
+
+  const onBackClick = useCallback(() => {
+    ipcRenderer.sendMessage('abort', ['grpc-counter']);
   }, []);
 
   return (
-    <Flex p={4} gap={4} flexDir="column">
-      <Link to="/">
+    <Flex p={4} gap={4} flexDir='column'>
+      <NavLink to='/' onClick={onBackClick}>
         <Heading>GRPC</Heading>
-      </Link>
+      </NavLink>
       <Text>Message: {message}</Text>
       <Text>Counter: {counter}</Text>
+      <Button onClick={onGetDataClick}>Get data</Button>
     </Flex>
   );
 }
@@ -62,8 +75,8 @@ export default function App() {
     <ChakraProvider>
       <Router>
         <Routes>
-          <Route path="/" element={<Hello />} />
-          <Route path="/grpc" element={<Grpc />} />
+          <Route path='/' element={<Hello />} />
+          <Route path='/grpc' element={<Grpc />} />
         </Routes>
       </Router>
     </ChakraProvider>

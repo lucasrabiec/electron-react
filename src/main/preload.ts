@@ -1,6 +1,6 @@
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
 
-export type Channels = 'ipc-example' | 'grpc-hello' | 'grpc-counter';
+export type Channels = 'ipc-example' | 'grpc-hello' | 'grpc-counter' | 'abort';
 
 contextBridge.exposeInMainWorld('electron', {
   ipcRenderer: {
@@ -16,6 +16,12 @@ contextBridge.exposeInMainWorld('electron', {
     },
     once(channel: Channels, func: (...args: unknown[]) => void) {
       ipcRenderer.once(channel, (_event, ...args) => func(...args));
+    },
+    removeAllListeners(channel: Channels) {
+      ipcRenderer.removeAllListeners(channel);
+    },
+    invoke(channel: Channels, args: unknown[]) {
+      return ipcRenderer.invoke(channel, args);
     },
   },
 });

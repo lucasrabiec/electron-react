@@ -5099,6 +5099,11 @@ focus-lock@^0.11.2:
   dependencies:
     tslib "^2.0.3"
 
+focus-visible@^5.2.0:
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/focus-visible/-/focus-visible-5.2.0.tgz#3a9e41fccf587bd25dcc2ef045508284f0a4d6b3"
+  integrity sha512-Rwix9pBtC1Nuy5wysTmKy+UjbDJpIfg8eHjw0rjZ1mX4GNLz1Bmd16uDpI3Gk1i70Fgcs8Csg2lPm8HULFg9DQ==
+
 follow-redirects@^1.0.0:
   version "1.15.0"
   resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.15.0.tgz#06441868281c86d0dda4ad8bdaead2d02dca89d4"
@@ -7359,6 +7364,11 @@ node-abort-controller@^1.2.1:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/node-abort-controller/-/node-abort-controller-2.0.0.tgz#800e0d250d3b977175e48df4f74c2d3960076a79"
   integrity sha512-L8RfEgjBTHAISTuagw51PprVAqNZoG6KSB6LQ6H1bskMVkFs5E71IyjauLBv3XbuomJlguWF/VnRHdJ1gqiAqA==
+
+node-abort-controller@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/node-abort-controller/-/node-abort-controller-3.0.1.tgz#f91fa50b1dee3f909afabb7e261b1e1d6b0cb74e"
+  integrity sha512-/ujIVxthRs+7q6hsdjHMaj8hRG9NuWmwrz+JdRwZ14jdFoKSkm+vDsCbF9PLpnSqjaWQJuTmVtcWHNLr+vrOFw==
 
 node-addon-api@^1.6.3:
   version "1.7.2"

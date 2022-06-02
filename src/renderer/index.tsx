@@ -1,5 +1,6 @@
 import { createRoot } from 'react-dom/client';
 import App from './App';
+import 'focus-visible/dist/focus-visible';
 
 const container = document.getElementById('root')!;
 const root = createRoot(container);

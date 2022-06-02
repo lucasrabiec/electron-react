@@ -10,6 +10,8 @@ declare global {
           func: (...args: unknown[]) => void
         ): (() => void) | undefined;
         once(channel: string, func: (...args: unknown[]) => void): void;
+        removeAllListeners(channel: string): void;
+        invoke(channel: Channels, args: unknown[]): Promise<void>;
       };
     };
   }

@@ -26,10 +26,7 @@ function createBaseHelloRequest(): HelloRequest {
 }
 
 export const HelloRequest = {
-  encode(
-    message: HelloRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: HelloRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.name !== '') {
       writer.uint32(10).string(message.name);
     }
@@ -78,10 +75,7 @@ function createBaseHelloReply(): HelloReply {
 }
 
 export const HelloReply = {
-  encode(
-    message: HelloReply,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: HelloReply, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.message !== '') {
       writer.uint32(10).string(message.message);
     }
@@ -130,10 +124,7 @@ function createBaseCountRequest(): CountRequest {
 }
 
 export const CountRequest = {
-  encode(
-    message: CountRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: CountRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.countRange !== 0) {
       writer.uint32(8).int32(message.countRange);
     }
@@ -166,8 +157,7 @@ export const CountRequest = {
 
   toJSON(message: CountRequest): unknown {
     const obj: any = {};
-    message.countRange !== undefined &&
-      (obj.countRange = Math.round(message.countRange));
+    message.countRange !== undefined && (obj.countRange = Math.round(message.countRange));
     return obj;
   },
 
@@ -183,10 +173,7 @@ function createBaseCountReply(): CountReply {
 }
 
 export const CountReply = {
-  encode(
-    message: CountReply,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: CountReply, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.counter !== 0) {
       writer.uint32(8).int32(message.counter);
     }
@@ -219,8 +206,7 @@ export const CountReply = {
 
   toJSON(message: CountReply): unknown {
     const obj: any = {};
-    message.counter !== undefined &&
-      (obj.counter = Math.round(message.counter));
+    message.counter !== undefined && (obj.counter = Math.round(message.counter));
     return obj;
   },
 
@@ -256,35 +242,19 @@ export const GreeterDefinition = {
 } as const;
 
 export interface GreeterServiceImplementation<CallContextExt = {}> {
-  sayHello(
-    request: HelloRequest,
-    context: CallContext & CallContextExt
-  ): Promise<DeepPartial<HelloReply>>;
+  sayHello(request: HelloRequest, context: CallContext & CallContextExt): Promise<DeepPartial<HelloReply>>;
   serverCounter(
     request: CountRequest,
-    context: CallContext & CallContextExt
+    context: CallContext & CallContextExt,
   ): ServerStreamingMethodResult<DeepPartial<CountReply>>;
 }
 
 export interface GreeterClient<CallOptionsExt = {}> {
-  sayHello(
-    request: DeepPartial<HelloRequest>,
-    options?: CallOptions & CallOptionsExt
-  ): Promise<HelloReply>;
-  serverCounter(
-    request: DeepPartial<CountRequest>,
-    options?: CallOptions & CallOptionsExt
-  ): AsyncIterable<CountReply>;
+  sayHello(request: DeepPartial<HelloRequest>, options?: CallOptions & CallOptionsExt): Promise<HelloReply>;
+  serverCounter(request: DeepPartial<CountRequest>, options?: CallOptions & CallOptionsExt): AsyncIterable<CountReply>;
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin
   ? T

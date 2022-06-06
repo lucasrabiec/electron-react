@@ -7,7 +7,12 @@ module.exports = {
     'import/prefer-default-export': 'off',
     // Since React 17 and typescript 4.1 you can safely disable the rule
     'react/react-in-jsx-scope': 'off',
+    'react/self-closing-comp': 'warn',
+    'react/jsx-curly-brace-presence': 'warn',
+    'react/jsx-props-no-spreading': 'off',
+    '@typescript-eslint/no-use-before-define': 'off',
     'no-restricted-syntax': 'off',
+    'prettier/prettier': 'off',
   },
   parserOptions: {
     ecmaVersion: 2020,

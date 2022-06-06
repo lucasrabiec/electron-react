@@ -1,44 +1,42 @@
 import { ipcMain } from 'electron';
 import { createChannel, createClient } from 'nice-grpc';
 import { AbortController } from 'node-abort-controller';
-import { AbortError } from 'ix';
-import {
-  GreeterClient,
-  GreeterDefinition,
-} from '../grpc/gen_proto/hello-world';
+import { AbortError } from '@reactivex/ix-esnext-cjs';
+import { GreeterClient, GreeterDefinition } from '../../grpc/gen_proto/hello-world';
+import { Channels } from '../../utils/consts';
 
 const channel = createChannel('localhost:50051');
 
 const client: GreeterClient = createClient(GreeterDefinition, channel);
 
-export async function grpcClient() {
+export async function startGrpcHandler() {
   let abortController: AbortController;
 
-  ipcMain.on('grpc-hello', async (event, [request]) => {
+  ipcMain.on(Channels.GRPC_HELLO, async (event, [request]) => {
     const { message } = await client.sayHello(request);
-    event.reply('grpc-hello', message);
+    event.reply(Channels.GRPC_HELLO, message);
   });
 
-  ipcMain.on('grpc-counter', async (event, [request]) => {
+  ipcMain.on(Channels.GRPC_COUNTER, async (event, [request]) => {
     abortController = new AbortController();
     try {
       for await (const response of client.serverCounter(request, {
         signal: abortController.signal,
       })) {
         if (!abortController.signal.aborted) {
-          event.reply('grpc-counter', response.counter);
+          event.reply(Channels.GRPC_COUNTER, response.counter);
         }
       }
     } catch (err) {
       if (err instanceof AbortError) {
-        console.log(err.message);
+        console.error(err.message);
       } else {
         throw err;
       }
     }
   });
 
-  ipcMain.on('abort', async () => {
-    abortController.abort();
+  ipcMain.on(Channels.GRPC_ABORT, async () => {
+    abortController?.abort();
   });
 }

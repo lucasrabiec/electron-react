@@ -14,7 +14,10 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
-import { grpcClient } from './grpc-client';
+import { startGrpcHandler } from './handlers/grpc-handler';
+import { Channels } from '../utils/consts';
+import { startFilesHandler } from './handlers/files-handler';
+import { startGrpcServer } from '../grpc/greeter-server';
 
 export default class AppUpdater {
   constructor() {
@@ -26,22 +29,22 @@ export default class AppUpdater {
 
 let mainWindow: BrowserWindow | null = null;
 
-ipcMain.on('ipc-example', async (event, arg) => {
+ipcMain.on(Channels.IPC_EXAMPLE, async (event, arg) => {
   const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
   console.log(msgTemplate(arg));
-  event.reply('ipc-example', msgTemplate('pong'));
+  event.reply(Channels.IPC_EXAMPLE, msgTemplate('pong'));
 });
 
-// eslint-disable-next-line promise/catch-or-return
-grpcClient().catch((err) => console.error(err));
+startGrpcServer().catch((err) => console.log(err));
+startGrpcHandler().catch((err) => console.error(err));
+startFilesHandler().catch((err) => console.error(err));
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
   sourceMapSupport.install();
 }
 
-const isDebug =
-  process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
+const isDebug = process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
 
 if (isDebug) {
   require('electron-debug')();
@@ -55,7 +58,7 @@ const installExtensions = async () => {
   return installer
     .default(
       extensions.map((name) => installer[name]),
-      forceDownload
+      forceDownload,
     )
     .catch(console.log);
 };
@@ -77,11 +80,11 @@ const createWindow = async () => {
     show: false,
     width: 1280,
     height: 720,
+    minWidth: 1280,
+    minHeight: 720,
     icon: getAssetPath('icon.png'),
     webPreferences: {
-      preload: app.isPackaged
-        ? path.join(__dirname, 'preload.js')
-        : path.join(__dirname, '../../.erb/dll/preload.js'),
+      preload: app.isPackaged ? path.join(__dirname, 'preload.js') : path.join(__dirname, '../../.erb/dll/preload.js'),
     },
   });
 

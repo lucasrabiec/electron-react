@@ -13,7 +13,7 @@ export default function Files() {
 
   const onLoadClick = useCallback(async () => {
     const fileContent = await ipcRenderer.invoke(Channel.FILES_OPEN_DIALOG, []);
-    if (typeof fileContent === 'string') {
+    if (fileContent && typeof fileContent === 'string') {
       setText(fileContent);
     }
   }, []);

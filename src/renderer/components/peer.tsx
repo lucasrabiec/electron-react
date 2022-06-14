@@ -14,14 +14,14 @@ import {
   FormControl,
   FormErrorMessage,
 } from '@chakra-ui/react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { RiSendPlaneFill } from 'react-icons/ri';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod/dist/zod';
 import { z } from 'zod';
 import { useEffectOnce, useToggle } from 'react-use';
 import { useInitPeer } from '../contexts/peer-context';
-import { getPeer } from '../../web-rtc/peer-client';
+import { getPeer, useData } from '../../web-rtc/peer-client';
 
 export interface PeerProps {
   name: string;
@@ -39,12 +39,12 @@ export default function Peer({ name }: PeerProps) {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const peerClient = useRef<any>(null!);
   const textArea = useRef<any>();
-  const [messages, setMessages] = useState<string>('');
   const { initPeerId, updateInitPeerId } = useInitPeer();
   const [isConnected, setIsConnected] = useToggle(false);
+  const messages = useData();
 
   useEffectOnce(() => {
-    peerClient.current = getPeer(addMessage, true);
+    peerClient.current = getPeer(true);
   });
 
   useEffect(() => {
@@ -67,13 +67,8 @@ export default function Peer({ name }: PeerProps) {
 
   const onSubmit = ({ message }: MessageData) => {
     const fullMsg = `${name}: ${message}`;
-    addMessage(fullMsg);
     peerClient.current?.sendMessage(fullMsg);
     reset();
-  };
-
-  const addMessage = (message: string) => {
-    setMessages((prevState) => `${prevState}${prevState && '\n'}${message}`);
   };
 
   return (

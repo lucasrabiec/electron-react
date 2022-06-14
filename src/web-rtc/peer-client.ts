@@ -1,8 +1,12 @@
 import Peer, { DataConnection } from 'peerjs';
+import { bind } from '@react-rxjs/core';
+import { createSignal } from '@react-rxjs/utils';
+import { scan } from 'rxjs/operators';
 
-type DataCallback = (value: string) => void;
+const [dataChange$, setData] = createSignal<string>();
+export const [useData, data$] = bind<string>(dataChange$.pipe(scan((all, current) => `${all}\n${current}`)), '');
 
-export function getPeer(dataCallback: DataCallback, debug = false) {
+export function getPeer(debug = false) {
   let id: string | undefined;
   let connection: DataConnection | undefined;
 
@@ -42,9 +46,7 @@ export function getPeer(dataCallback: DataCallback, debug = false) {
   function handleConnection(conn: DataConnection) {
     connection = conn;
     log(`Connection established in: ${id} with: ${conn.peer}`);
-    connection.on('data', (data) => {
-      dataCallback(data as string);
-    });
+    connection.on('data', (data) => setData(data as string));
   }
 
   function log(message: string) {

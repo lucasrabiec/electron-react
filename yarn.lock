@@ -1504,6 +1504,19 @@
   resolved "https://registry.yarnpkg.com/@protobufjs/utf8/-/utf8-1.1.0.tgz#a777360b5b39a1a2e5106f8e858f2fd2d060c570"
   integrity sha512-Vvn3zZrhQZkkBE8LSuW3em98c0FwgO4nxzv6OdSxPKJIEKY2bGbHn+mhGIPerzI4twdxaP8/0+06HBpwf345Lw==
 
+"@react-rxjs/core@^0.9.6":
+  version "0.9.6"
+  resolved "https://registry.yarnpkg.com/@react-rxjs/core/-/core-0.9.6.tgz#7f4f61403009c53a09d36a1a389b5ba4a0c5fccd"
+  integrity sha512-OEyGPca1LXz06iLZMJyFniE3fFaqNvS/+jdpk7gtNFLGmwCo5H6HPAGFEEhui90A0BpLR1hSzDHy3L9b3I9rZw==
+  dependencies:
+    "@rxstate/core" "^0.0.1"
+    use-sync-external-store "^1.0.0"
+
+"@react-rxjs/utils@^0.9.5":
+  version "0.9.5"
+  resolved "https://registry.yarnpkg.com/@react-rxjs/utils/-/utils-0.9.5.tgz#e880e7bec46f6153f9402e9acc42b28225a468d2"
+  integrity sha512-RXVw8JAnBvKb23CixtrH7w5CKiiJodyck8T0s8o94XSor5XfsqpDrDk8Cq8iwyrxvvSL3+BoNAA+WCbVFTVhcg==
+
 "@reactivex/ix-esnext-cjs@^4.5.2":
   version "4.5.2"
   resolved "https://registry.yarnpkg.com/@reactivex/ix-esnext-cjs/-/ix-esnext-cjs-4.5.2.tgz#234ae858da9bec5ae1661b4769c86908a20e4923"
@@ -1511,6 +1524,11 @@
   dependencies:
     "@types/node" "^13.7.4"
     tslib "^2.3.0"
+
+"@rxstate/core@^0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@rxstate/core/-/core-0.0.1.tgz#899c8c863b1c251368cde9b23bcc79a10da87a70"
+  integrity sha512-be8446G5eapl6X8IAuYvvYY78CnyuXX7pASAYG2Ww95hCbqfNLSYXqknvWeUJ4ovO63l5xdM29ct0uUysKDyog==
 
 "@sinclair/typebox@^0.23.3":
   version "0.23.5"
@@ -10304,6 +10322,11 @@ use-sidecar@^1.1.2:
   dependencies:
     detect-node-es "^1.1.0"
     tslib "^2.0.0"
+
+use-sync-external-store@^1.0.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/use-sync-external-store/-/use-sync-external-store-1.1.0.tgz#3343c3fe7f7e404db70f8c687adf5c1652d34e82"
+  integrity sha512-SEnieB2FPKEVne66NpXPd1Np4R1lTNKfjuy3XdIoPQKYBAFdzbzSZlSn1KJZUiihQLQC5Znot4SBz1EOTBwQAQ==
 
 utf8-byte-length@^1.0.1:
   version "1.0.4"

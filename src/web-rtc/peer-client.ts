@@ -6,55 +6,61 @@ import { scan } from 'rxjs/operators';
 const [dataChange$, setData] = createSignal<string>();
 export const [useData, data$] = bind<string>(dataChange$.pipe(scan((all, current) => `${all}\n${current}`)), '');
 
-export function getPeer(debug = false) {
-  let id: string | undefined;
-  let connection: DataConnection | undefined;
+export class PeerClient {
+  id: string | undefined;
+  connection: DataConnection | undefined;
 
-  const peer = new Peer({
-    host: 'localhost',
-    port: 50055,
-    debug: debug ? 2 : 0,
-  });
+  private readonly isDebug: boolean;
+  private peer: Peer;
 
-  (function init() {
-    peer.on('open', handleOpen);
-    peer.on('connection', handleConnection);
-  })();
+  constructor(debug = false) {
+    this.peer = new Peer({
+      host: 'localhost',
+      port: 50055,
+      debug: debug ? 2 : 0,
+    });
+    this.isDebug = debug;
 
-  function connect(peerId?: string) {
+    this.initialize();
+  }
+
+  connect(peerId?: string) {
     if (peerId) {
-      const peerConnection = peer.connect(peerId);
-      handleConnection(peerConnection);
+      const peerConnection = this.peer.connect(peerId);
+      this.handleConnection(peerConnection);
       return peerId;
     }
-    return id;
+    return this.id;
   }
 
-  function sendMessage(message: string) {
-    if (!connection) {
-      log('No connection!');
+  sendMessage(message: string) {
+    if (!this.connection) {
+      this.log('No connection!');
       return;
     }
-    connection.send(message);
+    this.connection.send(message);
   }
 
-  function handleOpen(peerId: string) {
-    log(peerId);
-    id = peerId;
+  private initialize() {
+    this.peer.on('open', (data) => this.handleOpen(data));
+    this.peer.on('connection', (conn) => this.handleConnection(conn));
   }
 
-  function handleConnection(conn: DataConnection) {
-    connection = conn;
-    log(`Connection established in: ${id} with: ${conn.peer}`);
-    connection.on('data', (data) => setData(data as string));
+  private handleOpen(peerId: string) {
+    this.log(peerId);
+    this.id = peerId;
   }
 
-  function log(message: string) {
-    if (debug) {
+  private handleConnection(conn: DataConnection) {
+    this.connection = conn;
+    this.log(`Connection established in: ${this.id} with: ${conn.peer}`);
+    this.connection.on('data', (data) => setData(data as string));
+  }
+
+  private log(message: string) {
+    if (this.isDebug) {
       // eslint-disable-next-line no-console
       console.log(message);
     }
   }
-
-  return { id, connect, sendMessage };
 }

@@ -21,7 +21,7 @@ import { zodResolver } from '@hookform/resolvers/zod/dist/zod';
 import { z } from 'zod';
 import { useEffectOnce, useToggle } from 'react-use';
 import { useInitPeer } from '../contexts/peer-context';
-import { getPeer, useData } from '../../web-rtc/peer-client';
+import { PeerClient, useData } from '../../web-rtc/peer-client';
 
 export interface PeerProps {
   name: string;
@@ -37,14 +37,15 @@ interface MessageData {
 
 export default function Peer({ name }: PeerProps) {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const peerClient = useRef<any>(null!);
+  const peerClient = useRef<PeerClient>(null!);
   const textArea = useRef<any>();
   const { initPeerId, updateInitPeerId } = useInitPeer();
   const [isConnected, setIsConnected] = useToggle(false);
   const messages = useData();
 
   useEffectOnce(() => {
-    peerClient.current = getPeer(true);
+    peerClient.current = new PeerClient(true);
+    setIsConnected(false);
   });
 
   useEffect(() => {
@@ -61,7 +62,12 @@ export default function Peer({ name }: PeerProps) {
   });
 
   const onConnectClick = () => {
-    updateInitPeerId(peerClient.current.connect(initPeerId));
+    const peerIdInitializedConnection = peerClient.current.connect(initPeerId);
+    if (!peerIdInitializedConnection) {
+      alert('Missing Peer ID');
+      return;
+    }
+    updateInitPeerId(peerIdInitializedConnection);
     setIsConnected(true);
   };
 

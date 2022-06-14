@@ -11,6 +11,7 @@ module.exports = {
     'react/jsx-curly-brace-presence': 'warn',
     'react/jsx-props-no-spreading': 'off',
     '@typescript-eslint/no-use-before-define': 'off',
+    '@typescript-eslint/lines-between-class-members': 'off',
     'no-restricted-syntax': 'off',
     'prettier/prettier': 'off',
   },

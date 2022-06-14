@@ -9,13 +9,13 @@
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
 import path from 'path';
-import { app, BrowserWindow, shell, ipcMain } from 'electron';
+import { app, BrowserWindow, shell } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
+import { PeerServer } from 'peer';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 import { startGrpcHandler } from './handlers/grpc-handler';
-import { Channels } from '../utils/consts';
 import { startFilesHandler } from './handlers/files-handler';
 import { startGrpcServer } from '../grpc/greeter-server';
 
@@ -28,16 +28,6 @@ export default class AppUpdater {
 }
 
 let mainWindow: BrowserWindow | null = null;
-
-ipcMain.on(Channels.IPC_EXAMPLE, async (event, arg) => {
-  const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
-  console.log(msgTemplate(arg));
-  event.reply(Channels.IPC_EXAMPLE, msgTemplate('pong'));
-});
-
-startGrpcServer().catch((err) => console.log(err));
-startGrpcHandler().catch((err) => console.error(err));
-startFilesHandler().catch((err) => console.error(err));
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
@@ -119,9 +109,12 @@ const createWindow = async () => {
   new AppUpdater();
 };
 
-/**
- * Add event listeners...
- */
+const runUtils = () => {
+  startGrpcServer().catch((err) => console.log(err));
+  startGrpcHandler().catch((err) => console.error(err));
+  startFilesHandler().catch((err) => console.error(err));
+  PeerServer({ port: 50055 });
+};
 
 app.on('window-all-closed', () => {
   // Respect the OSX convention of having the application in memory even
@@ -134,6 +127,7 @@ app.on('window-all-closed', () => {
 app
   .whenReady()
   .then(() => {
+    runUtils();
     createWindow();
     app.on('activate', () => {
       // On macOS it's common to re-create a window in the app when the

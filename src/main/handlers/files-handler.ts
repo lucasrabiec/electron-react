@@ -1,10 +1,10 @@
 import { app, dialog, ipcMain } from 'electron';
 import fs from 'fs';
 import fsPromise from 'fs/promises';
-import { Channels } from '../../utils/consts';
+import { Channel } from '../../utils/consts';
 
 export async function startFilesHandler() {
-  ipcMain.handle(Channels.FILES_SAVE_DIALOG, async (_, [fileContent]) => {
+  ipcMain.handle(Channel.FILES_SAVE_DIALOG, async (_, [fileContent]) => {
     const saveDialogReturnValue = await dialog.showSaveDialog({ defaultPath: `${app.getPath('desktop')}/example.txt` });
     if (!saveDialogReturnValue.filePath || saveDialogReturnValue.canceled) {
       return;
@@ -13,7 +13,7 @@ export async function startFilesHandler() {
     fs.writeFile(saveDialogReturnValue.filePath, fileContent, () => {});
   });
 
-  ipcMain.handle(Channels.FILES_OPEN_DIALOG, async () => {
+  ipcMain.handle(Channel.FILES_OPEN_DIALOG, async () => {
     const openDialogReturnValue = await dialog.showOpenDialog({
       properties: ['openFile'],
       filters: [{ name: 'Text', extensions: ['txt'] }],

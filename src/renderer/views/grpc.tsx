@@ -19,8 +19,8 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { Channels } from '../../utils/consts';
-import grpcImage from '../../images/grpc.jpeg';
+import { Channel } from '../../utils/consts';
+import grpcImage from '../../app-assets/grpc.jpeg';
 
 const { ipcRenderer } = window.electron;
 
@@ -46,25 +46,25 @@ export default function Grpc() {
   });
 
   useEffect(() => {
-    ipcRenderer.once(Channels.GRPC_HELLO, (helloMessage) => {
+    ipcRenderer.once(Channel.GRPC_HELLO, (helloMessage) => {
       setMessage(helloMessage as string);
     });
-    ipcRenderer.on(Channels.GRPC_COUNTER, (countVal) => {
+    ipcRenderer.on(Channel.GRPC_COUNTER, (countVal) => {
       setCounter(countVal as number);
     });
 
     return function cleanup() {
       abortCounter();
-      ipcRenderer.removeAllListeners(Channels.GRPC_HELLO);
-      ipcRenderer.removeAllListeners(Channels.GRPC_COUNTER);
+      ipcRenderer.removeAllListeners(Channel.GRPC_HELLO);
+      ipcRenderer.removeAllListeners(Channel.GRPC_COUNTER);
     };
   }, []);
 
   const onAbortClick = useCallback(() => abortCounter(), []);
   const onSubmit = ({ name, countRange }: GrpcFormData) => {
     abortCounter();
-    ipcRenderer.sendMessage(Channels.GRPC_HELLO, [{ name }]);
-    ipcRenderer.sendMessage(Channels.GRPC_COUNTER, [{ countRange }]);
+    ipcRenderer.sendMessage(Channel.GRPC_HELLO, [{ name }]);
+    ipcRenderer.sendMessage(Channel.GRPC_COUNTER, [{ countRange }]);
   };
 
   return (
@@ -96,8 +96,12 @@ export default function Grpc() {
           <FormErrorMessage>{errors.countRange?.message}</FormErrorMessage>
         </FormControl>
         <Text fontSize='xl'>Counter: {counter}</Text>
-        <Button type='submit'>Send</Button>
-        <Button onClick={onAbortClick}>Abort</Button>
+        <Button type='submit' colorScheme='orange'>
+          Send
+        </Button>
+        <Button onClick={onAbortClick} colorScheme='orange'>
+          Abort
+        </Button>
       </SimpleGrid>
       <Image src={grpcImage} fit='scale-down' flex='auto' h='100px' />
     </Flex>
@@ -105,5 +109,5 @@ export default function Grpc() {
 }
 
 function abortCounter() {
-  ipcRenderer.sendMessage(Channels.GRPC_ABORT, []);
+  ipcRenderer.sendMessage(Channel.GRPC_ABORT, []);
 }

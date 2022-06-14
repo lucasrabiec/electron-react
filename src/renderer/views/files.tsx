@@ -1,6 +1,6 @@
 import { Button, Flex, Heading, Text, Textarea } from '@chakra-ui/react';
 import { useCallback, useState } from 'react';
-import { Channels } from '../../utils/consts';
+import { Channel } from '../../utils/consts';
 
 const { ipcRenderer } = window.electron;
 
@@ -8,11 +8,11 @@ export default function Files() {
   const [text, setText] = useState('');
 
   const onSaveClick = useCallback(async () => {
-    await ipcRenderer.invoke(Channels.FILES_SAVE_DIALOG, [text]);
+    await ipcRenderer.invoke(Channel.FILES_SAVE_DIALOG, [text]);
   }, [text]);
 
   const onLoadClick = useCallback(async () => {
-    const fileContent = await ipcRenderer.invoke(Channels.FILES_OPEN_DIALOG, []);
+    const fileContent = await ipcRenderer.invoke(Channel.FILES_OPEN_DIALOG, []);
     if (typeof fileContent === 'string') {
       setText(fileContent);
     }

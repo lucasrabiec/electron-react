@@ -9,9 +9,12 @@
     "sass",
     "webpack",
     "hot",
-    "reload"
+    "reload",
+    "grpc",
+    "webrtc",
+    "socket",
+    "store"
   ],
-  "homepage": "https://github.com/electron-react-boilerplate/electron-react-boilerplate#readme",
   "bugs": {
     "url": "https://github.com/electron-react-boilerplate/electron-react-boilerplate/issues"
   },
@@ -21,17 +24,8 @@
   },
   "license": "MIT",
   "author": {
-    "name": "Electron React Boilerplate Maintainers",
-    "email": "electronreactboilerplate@gmail.com",
-    "url": "https://electron-react-boilerplate.js.org"
+    "name": "Lucas Rabiec"
   },
-  "contributors": [
-    {
-      "name": "Amila Welihinda",
-      "email": "amilajack@gmail.com",
-      "url": "https://github.com/amilajack"
-    }
-  ],
   "main": "./src/main/main.ts",
   "scripts": {
     "build": "concurrently \"npm run build:main\" \"npm run build:renderer\"",
@@ -49,7 +43,7 @@
     "start:preload": "cross-env NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.preload.dev.ts",
     "start:renderer": "cross-env NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true webpack serve --config ./.erb/configs/webpack.config.renderer.dev.ts",
     "test": "jest",
-    "proto:gen": "protoc --proto_path=./src/grpc/proto --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_opt=outputServices=nice-grpc,outputServices=generic-definitions,useExactTypes=false,esModuleInterop=true --ts_proto_out=./src/grpc/gen_proto ./src/grpc/proto/*.proto"
+    "proto:gen": "protoc --proto_path=./src/grpc/proto --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_opt=outputServices=nice-grpc,outputServices=generic-definitions,useExactTypes=false,esModuleInterop=true --ts_proto_out=./src/grpc/gen-proto ./src/grpc/proto/*.proto"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
@@ -129,11 +123,20 @@
     "long": "^5.2.0",
     "nice-grpc": "^1.2.0",
     "node-abort-controller": "^3.0.1",
+    "peer": "^0.6.1",
+    "peerjs": "^1.4.6",
     "protobufjs": "^6.11.3",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
     "react-hook-form": "^7.31.3",
+    "react-icons": "^4.4.0",
     "react-router-dom": "^6.3.0",
+    "react-use": "^17.4.0",
+    "simple-peer": "^9.11.1",
+    "simple-peer-server": "^0.0.8",
+    "simple-peer-wrapper": "^0.0.4",
+    "socket.io": "^4.5.1",
+    "socket.io-client": "^4.5.1",
     "zod": "^3.17.3"
   },
   "devDependencies": {
@@ -146,6 +149,7 @@
     "@types/react": "^18.0.9",
     "@types/react-dom": "^18.0.4",
     "@types/react-test-renderer": "^18.0.0",
+    "@types/simple-peer": "^9.11.4",
     "@types/terser-webpack-plugin": "^5.0.4",
     "@types/webpack-bundle-analyzer": "^4.4.1",
     "@typescript-eslint/eslint-plugin": "^5.23.0",
@@ -214,7 +218,7 @@
       "dist",
       "node_modules",
       "package.json",
-      "images"
+      "app-assets"
     ],
     "afterSign": ".erb/scripts/notarize.js",
     "mac": {
@@ -269,9 +273,6 @@
       "owner": "electron-react-boilerplate",
       "repo": "electron-react-boilerplate"
     }
-  },
-  "collective": {
-    "url": "https://opencollective.com/electron-react-boilerplate-594"
   },
   "devEngines": {
     "node": ">=14.x",

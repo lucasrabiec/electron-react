@@ -7,7 +7,7 @@ import {
   GreeterDefinition,
   GreeterServiceImplementation,
   HelloReply,
-} from './gen_proto/hello-world';
+} from './gen-proto/hello-world';
 
 const impl: GreeterServiceImplementation = {
   async sayHello(request): Promise<DeepPartial<HelloReply>> {

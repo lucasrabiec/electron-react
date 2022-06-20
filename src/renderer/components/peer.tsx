@@ -46,6 +46,7 @@ export default function Peer({ name }: PeerProps) {
   useEffectOnce(() => {
     peerClient.current = new PeerClient(true);
     setIsConnected(false);
+    console.log('s');
   });
 
   useEffect(() => {
@@ -94,9 +95,9 @@ export default function Peer({ name }: PeerProps) {
           Connect
         </Button>
       </HStack>
-      <VStack align='left' w='100%'>
+      <VStack align='left' w='100%' flex='auto'>
         <Text fontSize='lg'>Chat:</Text>
-        <Textarea ref={textArea} disabled h='150' resize='none' color='black' bg='white' value={messages} />
+        <Textarea ref={textArea} disabled h='100%' resize='none' color='black' bg='white' value={messages} />
         <Box as='form' onSubmit={handleSubmit(onSubmit)} w='100%'>
           <FormControl isInvalid={!!errors.message}>
             <InputGroup w='100%'>

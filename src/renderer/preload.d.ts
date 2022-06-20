@@ -1,4 +1,4 @@
-import { Channel } from '../utils/consts';
+import { Channel, StoreType } from '../utils/consts';
 
 declare global {
   interface Window {
@@ -9,6 +9,11 @@ declare global {
         once(channel: string, func: (...args: unknown[]) => void): void;
         removeAllListeners(channel: string): void;
         invoke(channel: Channel, args: unknown[]): Promise<unknown>;
+      };
+      store: {
+        get: (key: string) => Promise<unknown>;
+        set: (key: string, val: unknown) => void;
+        getAll: () => Promise<StoreType>;
       };
     };
   }

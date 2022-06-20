@@ -19,9 +19,9 @@ export default function Files() {
   }, []);
 
   return (
-    <Flex flexDir='column' h='100%'>
+    <Flex flexDir='column' h='100%' gap={2}>
       <Heading>Files</Heading>
-      <Text>Data:</Text>
+      <Text>File content:</Text>
       <Textarea
         w='100%'
         h='100%'

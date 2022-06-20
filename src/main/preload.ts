@@ -22,4 +22,15 @@ contextBridge.exposeInMainWorld('electron', {
       return ipcRenderer.invoke(channel, args);
     },
   },
+  store: {
+    async get(key: string) {
+      return ipcRenderer.invoke(Channel.STORE_GET, key);
+    },
+    set(key: string, value: unknown) {
+      ipcRenderer.send(Channel.STORE_SET, key, value);
+    },
+    async getAll() {
+      return ipcRenderer.invoke(Channel.STORE_GET_ALL);
+    },
+  },
 });

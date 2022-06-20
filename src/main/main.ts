@@ -9,15 +9,18 @@
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
 import path from 'path';
-import { app, BrowserWindow, shell } from 'electron';
+import { app, BrowserWindow, shell, screen } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import { PeerServer } from 'peer';
+import Store from 'electron-store';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 import { startGrpcHandler } from './handlers/grpc-handler';
 import { startFilesHandler } from './handlers/files-handler';
 import { startGrpcServer } from '../grpc/greeter-server';
+import { startStoreHandler } from './handlers/store-handler';
+import { MinResolution } from '../utils/consts';
 
 export default class AppUpdater {
   constructor() {
@@ -66,12 +69,14 @@ const createWindow = async () => {
     return path.join(RESOURCES_PATH, ...paths);
   };
 
+  const { width, height } = getResolution();
+
   mainWindow = new BrowserWindow({
     show: false,
-    width: 1280,
-    height: 720,
-    minWidth: 1280,
-    minHeight: 720,
+    width,
+    height,
+    minWidth: MinResolution.WIDTH,
+    minHeight: MinResolution.HEIGHT,
     icon: getAssetPath('icon.png'),
     webPreferences: {
       preload: app.isPackaged ? path.join(__dirname, 'preload.js') : path.join(__dirname, '../../.erb/dll/preload.js'),
@@ -109,10 +114,25 @@ const createWindow = async () => {
   new AppUpdater();
 };
 
+const getResolution = () => {
+  const store = new Store();
+  if (!store.has('resolution')) {
+    return { width: MinResolution.WIDTH, height: MinResolution.HEIGHT };
+  }
+  const resolution = store.get('resolution') as string;
+  if (resolution === 'max') {
+    const { width, height } = screen.getPrimaryDisplay().workAreaSize;
+    return { width, height };
+  }
+  const [loadedWidth, loadedHeight] = resolution.split(',').map((val) => (Number.isNaN(val) ? undefined : Number(val)));
+  return { width: loadedWidth ?? MinResolution.WIDTH, height: loadedHeight ?? MinResolution.HEIGHT };
+};
+
 const runUtils = () => {
   startGrpcServer().catch((err) => console.log(err));
   startGrpcHandler().catch((err) => console.error(err));
   startFilesHandler().catch((err) => console.error(err));
+  startStoreHandler();
   PeerServer({ port: 50055 });
 };
 

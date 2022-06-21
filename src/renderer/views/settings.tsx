@@ -1,4 +1,4 @@
-import { Flex, Heading, FormControl, FormLabel, Select, Button } from '@chakra-ui/react';
+import { Flex, Heading, FormControl, FormLabel, Select, Button, Link } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod/dist/zod';
 import { z } from 'zod';
@@ -50,6 +50,9 @@ export default function Settings() {
           </Button>
         </Flex>
       </Flex>
+      <Link isExternal href='https://github.com/lucasrabiec/electron-react'>
+        GitHub (https://github.com/lucasrabiec/electron-react)
+      </Link>
     </Flex>
   );
 }
